@@ -1,5 +1,7 @@
 "use client";
 
+import { login } from "@/api/AuthAPI";
+import { Alert, AlertTitle, AlertDescription } from "@/components/Alert";
 import { Button } from "@/components/Button";
 import {
     Card,
@@ -17,30 +19,29 @@ import {
     FormMessage,
 } from "@/components/Form";
 import { Input } from "@/components/Input";
+import { loginFormSchema, LoginFormSchema } from "@/schema/formSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { AlertCircle } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
-
-const formSchema = z.object({
-    username: z.string().min(1, {
-        message: "Please enter your username",
-    }),
-    password: z.string().min(1, {
-        message: "Please enter your password",
-    }),
-});
-type FormSchema = z.infer<typeof formSchema>;
 export default function LoginPage() {
-    const form = useForm<FormSchema>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<LoginFormSchema>({
+        resolver: zodResolver(loginFormSchema),
         defaultValues: {
             username: "",
             password: "",
         },
     });
-    const onSubmit = (values: FormSchema) => {
-        console.log(values);
+    const [error, setError] = useState({
+        isError: false,
+        message: "",
+    });
+    const onSubmit = async (values: LoginFormSchema) => {
+        const response = await login(values);
+        if (response?.errorMessage) {
+            setError({ isError: true, message: response.errorMessage });
+        }
     };
     return (
         <div className="min-h-screen bg-gradient-to-r from-blue-100 to-purple-100 flex items-center justify-center">
@@ -51,6 +52,18 @@ export default function LoginPage() {
                             <CardTitle className="text-3xl font-bold text-center">
                                 Welcome back to WanderNest
                             </CardTitle>
+                            {error.isError && (
+                                <Alert
+                                    variant="destructive"
+                                    className="animate-shake animate-duration-[400ms] animate-ease-in"
+                                >
+                                    <AlertCircle className="h-4 w-4" />
+                                    <AlertTitle>Error</AlertTitle>
+                                    <AlertDescription>
+                                        {error.message}
+                                    </AlertDescription>
+                                </Alert>
+                            )}
                         </CardHeader>
                         <CardContent>
                             <FormField
@@ -105,7 +118,12 @@ export default function LoginPage() {
                             <div className="mt-6 text-center text-gray-600">
                                 <a>New to WanderNest ?</a>
                                 <Link href={"/accounts/register"}>
-                                    <Button variant={"link"} className="text-blue-500">Sign Up</Button>
+                                    <Button
+                                        variant={"link"}
+                                        className="text-blue-500"
+                                    >
+                                        Sign Up
+                                    </Button>
                                 </Link>
                             </div>
                         </CardFooter>
