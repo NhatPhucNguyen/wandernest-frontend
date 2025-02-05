@@ -61,6 +61,7 @@ export default function RegisterPage() {
                                 <Alert
                                     variant="destructive"
                                     className="animate-shake animate-duration-[400ms] animate-ease-in"
+                                    role="alert"
                                 >
                                     <AlertCircle className="h-4 w-4" />
                                     <AlertTitle>Error</AlertTitle>
@@ -76,9 +77,9 @@ export default function RegisterPage() {
                                 name="username"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Username</FormLabel>
+                                        <FormLabel htmlFor="username">Username</FormLabel>
                                         <FormControl>
-                                            <Input {...field} />
+                                            <Input {...field} id="username"/>
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -89,9 +90,9 @@ export default function RegisterPage() {
                                 name="password"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Password</FormLabel>
+                                        <FormLabel htmlFor="password">Password</FormLabel>
                                         <FormControl>
-                                            <Input type="password" {...field} />
+                                            <Input type="password" {...field} id="password"/>
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -102,9 +103,9 @@ export default function RegisterPage() {
                                 name="confirmPassword"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Confirm Password</FormLabel>
+                                        <FormLabel htmlFor="confirmPassword">Confirm Password</FormLabel>
                                         <FormControl>
-                                            <Input type="password" {...field} />
+                                            <Input type="password" {...field} id="confirmPassword"/>
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -115,9 +116,9 @@ export default function RegisterPage() {
                                 name="email"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Email</FormLabel>
+                                        <FormLabel htmlFor="email">Email</FormLabel>
                                         <FormControl>
-                                            <Input type="email" {...field} />
+                                            <Input type="email" {...field} id="email"/>
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>

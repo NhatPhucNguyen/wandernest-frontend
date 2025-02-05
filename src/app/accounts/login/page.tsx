@@ -71,9 +71,9 @@ export default function LoginPage() {
                                 name="username"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Username</FormLabel>
+                                        <FormLabel htmlFor="username">Username</FormLabel>
                                         <FormControl>
-                                            <Input {...field} />
+                                            <Input {...field} id="username"/>
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -84,9 +84,9 @@ export default function LoginPage() {
                                 name="password"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Password</FormLabel>
+                                        <FormLabel htmlFor="password">Password</FormLabel>
                                         <FormControl>
-                                            <Input type="password" {...field} />
+                                            <Input type="password" {...field} id="password"/>
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
