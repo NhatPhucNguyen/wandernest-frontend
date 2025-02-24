@@ -1,7 +1,7 @@
 "use client";
 
 import { login } from "@/api/AuthAPI";
-import { Alert, AlertTitle, AlertDescription } from "@/components/Alert";
+import { Alert, AlertDescription, AlertTitle } from "@/components/Alert";
 import { Button } from "@/components/Button";
 import {
     Card,
@@ -23,9 +23,11 @@ import { loginFormSchema, LoginFormSchema } from "@/schema/formSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 export default function LoginPage() {
+    const router = useRouter();
     const form = useForm<LoginFormSchema>({
         resolver: zodResolver(loginFormSchema),
         defaultValues: {
@@ -41,6 +43,8 @@ export default function LoginPage() {
         const response = await login(values);
         if (response?.errorMessage) {
             setError({ isError: true, message: response.errorMessage });
+        } else {
+            router.push("/dashboard");
         }
     };
     return (
@@ -71,9 +75,11 @@ export default function LoginPage() {
                                 name="username"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel htmlFor="username">Username</FormLabel>
+                                        <FormLabel htmlFor="username">
+                                            Username
+                                        </FormLabel>
                                         <FormControl>
-                                            <Input {...field} id="username"/>
+                                            <Input {...field} id="username" />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -84,9 +90,15 @@ export default function LoginPage() {
                                 name="password"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel htmlFor="password">Password</FormLabel>
+                                        <FormLabel htmlFor="password">
+                                            Password
+                                        </FormLabel>
                                         <FormControl>
-                                            <Input type="password" {...field} id="password"/>
+                                            <Input
+                                                type="password"
+                                                {...field}
+                                                id="password"
+                                            />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>

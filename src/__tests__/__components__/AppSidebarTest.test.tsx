@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi, Mock } from "vitest";
-import { AppSidebar } from "@/components/AppSidebar";
+import { AppSidebar } from "@/app/(main)/AppSidebar";
 import { usePathname } from "next/navigation";
 import { SidebarProvider } from "@/components/Sidebar";
 

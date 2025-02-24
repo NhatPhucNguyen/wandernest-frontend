@@ -17,6 +17,7 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
+    useSidebar,
 } from "@/components/Sidebar";
 import { usePathname } from "next/navigation";
 
@@ -29,7 +30,7 @@ const items = [
     },
     {
         title: "Itinerary",
-        url: "/itinerary",
+        url: "/dashboard/itinerary",
         icon: CalendarCheck,
     },
     {
@@ -61,13 +62,14 @@ const items = [
 
 export function AppSidebar() {
     const pathName = usePathname();
+    const { open } = useSidebar();
     return (
-        <Sidebar>
+        <Sidebar collapsible="icon">
             <SidebarContent className="bg-gray-800 text-white">
                 <SidebarHeader>
-                    <h1 className="text-center text-xl font-bold">
+                    {open && <h1 className="text-center text-xl font-bold">
                         WanderNest
-                    </h1>
+                    </h1>}
                 </SidebarHeader>
                 <SidebarGroup>
                     <SidebarGroupContent>

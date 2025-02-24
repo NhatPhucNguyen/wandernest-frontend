@@ -1,3 +1,4 @@
+import { DateRange } from "react-day-picker";
 import { z } from "zod";
 
 export const registerFormSchema = z
@@ -74,5 +75,19 @@ export const loginFormSchema = z.object({
         message: "Please enter your password",
     }),
 });
+
+export const itineraryForm = z.object({
+    destination: z.string().min(1, {
+        message: "Please enter your destination",
+    }),
+    travelDates: z.custom<DateRange>(),
+    numberOfTravelers: z.coerce.number().min(1, {
+        message: "Please enter the number of travelers",
+    }),
+    budget: z.coerce.number().min(1, {
+        message: "Please enter your budget",
+    }),
+});
 export type LoginFormSchema = z.infer<typeof loginFormSchema>;
 export type RegisterFormSchema = z.infer<typeof registerFormSchema>;
+export type ItineraryFormSchema = z.infer<typeof itineraryForm>;

@@ -4,8 +4,6 @@ import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { VariantProps, cva } from "class-variance-authority";
 import { PanelLeft } from "lucide-react";
-
-import { useIsMobile } from "@/hooks/useIsMobile";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/Separator";
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/Sheet";
@@ -18,6 +16,7 @@ import {
 } from "@/components/Tooltip";
 import { Button } from "@/components/Button";
 import { Input } from "./Input";
+import useIsMobile from "@/hooks/useIsMobile";
 
 const SIDEBAR_COOKIE_NAME = "sidebar:state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;

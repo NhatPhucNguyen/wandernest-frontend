@@ -26,6 +26,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import Cookie from 'js-cookie';
 export default function RegisterPage() {
     const router = useRouter();
     const form = useForm<RegisterFormSchema>({
@@ -46,6 +47,7 @@ export default function RegisterPage() {
         if (response?.errorMessage) {
             return setError({ isError: true, message: response.errorMessage });
         }
+        console.log(Cookie.get("username"));
         router.push("/accounts/login");
     };
     return (
