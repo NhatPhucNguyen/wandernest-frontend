@@ -65,7 +65,8 @@ export const logout = async () => {
         await customAxios.post("/api/auth/logout");
         Cookie.remove("token");
         Cookie.remove("username");
-    } catch (error) {
-        console.warn(error);
+    } catch {
+        Cookie.remove("token");
+        Cookie.remove("username");
     }
 };

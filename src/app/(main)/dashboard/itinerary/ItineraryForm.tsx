@@ -1,3 +1,4 @@
+import { generateItinerary } from "@/api/ItineraryAPI";
 import { Button } from "@/components/Button";
 import { Calendar } from "@/components/Calendar";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/Card";
@@ -10,14 +11,28 @@ import {
     FormMessage,
 } from "@/components/Form";
 import { Input } from "@/components/Input";
+import { MultiSelect } from "@/components/MultiSelect";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/Popover";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/Select";
+import { Spinner } from "@/components/Spinner";
+import { AccommodationType } from "@/enums/AccommodationType";
+import { ActivityInterest } from "@/enums/ActivityInterest";
+import { Cuisine } from "@/enums/Cuisine";
+import { useToast } from "@/hooks/useToast";
 import { cn } from "@/lib/utils";
 import { ItineraryFormSchema } from "@/schema/formSchema";
 import { StandaloneSearchBox } from "@react-google-maps/api";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import React, { Dispatch, SetStateAction, useRef } from "react";
+import { Dispatch, SetStateAction, useRef } from "react";
 import { UseFormReturn } from "react-hook-form";
+import useSWRMutation from "swr/mutation";
 type ItineraryFormProps = {
     setCenter: Dispatch<SetStateAction<{ lat: number; lng: number }>>;
     form: UseFormReturn<ItineraryFormSchema>;
@@ -28,10 +43,29 @@ const ItineraryForm = ({
     isLoadedGoogleService,
     setCenter,
 }: ItineraryFormProps) => {
+    const { toast } = useToast();
     const searchBoxRef = useRef<google.maps.places.SearchBox | null>(null);
-    const onSubmit = (values: ItineraryFormSchema) => {
-        //TODO: Generate itinerary
-        console.log(values);
+    const { isMutating, error, trigger } = useSWRMutation(
+        "/api/itineraries",
+        (key, { arg }: { arg: ItineraryFormSchema }) => generateItinerary(arg)
+    );
+    const onSubmit = async (values: ItineraryFormSchema) => {
+        const itinerary = await trigger(values);
+        if (error) {
+            toast({
+                variant: "destructive",
+                title: "Error",
+                description: "Failed to generate itinerary. Please try again.",
+            });
+        }
+        if (itinerary) {
+            toast({
+                variant: "default",
+                title: "Success",
+                description: "Itinerary created successfully.",
+            });
+        }
+        console.log(itinerary);
     };
     const handlePlacesChanged = () => {
         if (searchBoxRef.current) {
@@ -51,7 +85,14 @@ const ItineraryForm = ({
     };
     return (
         <Card className="w-full max-w-2xl mx-4">
-            <form onSubmit={form.handleSubmit(onSubmit)}>
+            <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                onKeyDown={(key) => {
+                    if (key.key === "Enter") {
+                        key.preventDefault();
+                    }
+                }}
+            >
                 <CardHeader>
                     <h2 className="text-2xl font-semibold mt-3 text-center text-gray-800">
                         Create a New Itinerary for Your Trip
@@ -203,10 +244,10 @@ const ItineraryForm = ({
                         />
                         <FormField
                             control={form.control}
-                            name="budget"
+                            name="totalBudget"
                             render={({ field }) => (
                                 <FormItem className="relative">
-                                    <FormLabel htmlFor="budget">
+                                    <FormLabel htmlFor="totalBudget">
                                         Budget
                                     </FormLabel>
                                     <FormControl>
@@ -227,14 +268,120 @@ const ItineraryForm = ({
                                 </FormItem>
                             )}
                         />
+                        <FormField
+                            control={form.control}
+                            name="accommodationType"
+                            render={({ field }) => {
+                                return (
+                                    <FormItem>
+                                        <FormLabel>
+                                            Accommodation Type
+                                        </FormLabel>
+                                        <FormControl>
+                                            <Select
+                                                onValueChange={field.onChange}
+                                            >
+                                                <SelectTrigger
+                                                    defaultValue={field.value}
+                                                >
+                                                    <SelectValue placeholder="Hotel" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {Object.keys(
+                                                        AccommodationType
+                                                    ).map((label) => {
+                                                        return (
+                                                            <SelectItem
+                                                                key={label}
+                                                                value={label}
+                                                            >
+                                                                {
+                                                                    AccommodationType[
+                                                                        label as keyof typeof AccommodationType
+                                                                    ]
+                                                                }
+                                                            </SelectItem>
+                                                        );
+                                                    })}
+                                                </SelectContent>
+                                            </Select>
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                );
+                            }}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="activityInterests"
+                            render={({ field }) => {
+                                return (
+                                    <FormItem>
+                                        <FormLabel>
+                                            Activity Interests
+                                        </FormLabel>
+                                        <FormControl>
+                                            <MultiSelect
+                                                options={Object.keys(
+                                                    ActivityInterest
+                                                ).map((key) => {
+                                                    return {
+                                                        label: ActivityInterest[
+                                                            key as keyof typeof ActivityInterest
+                                                        ],
+                                                        value: key,
+                                                    };
+                                                })}
+                                                onValueChange={field.onChange}
+                                                placeholder="Select your interests (optional)"
+                                                variant="default"
+                                                maxCount={5}
+                                            />
+                                        </FormControl>
+                                    </FormItem>
+                                );
+                            }}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="cuisinePreferences"
+                            render={({ field }) => {
+                                return (
+                                    <FormItem>
+                                        <FormLabel>
+                                            Cuisine Preferences
+                                        </FormLabel>
+                                        <FormControl>
+                                            <MultiSelect
+                                                options={Object.keys(
+                                                    Cuisine
+                                                ).map((key) => {
+                                                    return {
+                                                        label: Cuisine[
+                                                            key as keyof typeof Cuisine
+                                                        ],
+                                                        value: key,
+                                                    };
+                                                })}
+                                                onValueChange={field.onChange}
+                                                placeholder="Select your preferences (optional)"
+                                                variant="default"
+                                                maxCount={5}
+                                            />
+                                        </FormControl>
+                                    </FormItem>
+                                );
+                            }}
+                        />
                     </Form>
                 </CardContent>
                 <CardFooter className="flex justify-center">
                     <Button
                         className="w-1/3 bg-blue-700 hover:bg-blue-500"
                         type="submit"
+                        disabled={isMutating}
                     >
-                        Generate
+                        {isMutating ? <Spinner /> : "Generate"}
                     </Button>
                 </CardFooter>
             </form>

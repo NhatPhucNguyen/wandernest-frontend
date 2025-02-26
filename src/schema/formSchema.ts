@@ -84,9 +84,12 @@ export const itineraryForm = z.object({
     numberOfTravelers: z.coerce.number().min(1, {
         message: "Please enter the number of travelers",
     }),
-    budget: z.coerce.number().min(1, {
+    totalBudget: z.coerce.number().min(1, {
         message: "Please enter your budget",
     }),
+    accommodationType: z.string().default("HOTEL").optional(),
+    cuisinePreferences: z.array(z.string()).optional(),
+    activityInterests: z.array(z.string()).optional(),
 });
 export type LoginFormSchema = z.infer<typeof loginFormSchema>;
 export type RegisterFormSchema = z.infer<typeof registerFormSchema>;

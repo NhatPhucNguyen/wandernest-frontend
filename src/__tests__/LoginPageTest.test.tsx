@@ -5,7 +5,17 @@ import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
 vi.mock("@/api/AuthAPI", () => ({
     login: vi.fn(),
 }));
-
+vi.mock("next/navigation", () => ({
+    useRouter() {
+        return {
+            route: "/",
+            pathname: "",
+            query: "",
+            asPath: "",
+            push:vi.fn(),
+        };
+    },
+}));
 describe("LoginPage", () => {
     beforeEach(() => {
         vi.clearAllMocks();

@@ -35,7 +35,7 @@ const items = [
     },
     {
         title: "Accommodations",
-        url: "/accommodations",
+        url: "/dashboard/accommodations",
         icon: Hotel,
     },
     {

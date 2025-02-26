@@ -1,21 +1,20 @@
 "use client";
+import useUserItineraries from "@/hooks/useUserItineraries";
 import { itineraryForm, ItineraryFormSchema } from "@/schema/formSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Libraries, useJsApiLoader } from "@react-google-maps/api";
 import { addDays } from "date-fns";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
+import ItineraryList from "../_components/ItineraryList";
+import ItineraryListSkeleton from "../_components/ItineraryListSkeleton";
 import ItineraryForm from "./ItineraryForm";
 import MapDisplay from "./MapDisplay";
-import useUserItineraries from "@/hooks/useUserItineraries";
-import ItineraryListSkeleton from "../_components/ItineraryListSkeleton";
-import ItineraryList from "../_components/ItineraryList";
+import { Card } from "@/components/Card";
 const libraries: Libraries = ["places", "marker"];
 const Itinerary = () => {
-    const {
-        itineraries,
-        isLoading: isLoadingItineraries,
-    } = useUserItineraries();
+    const { itineraries, isLoading: isLoadingItineraries } =
+        useUserItineraries();
     const { isLoaded } = useJsApiLoader({
         id: "google-map-script",
         googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_API!,
@@ -39,13 +38,16 @@ const Itinerary = () => {
                 to: addDays(currentDate, 3),
             },
             numberOfTravelers: 1,
-            budget: 100,
+            totalBudget: 100,
+            accommodationType: "HOTEL",
+            cuisinePreferences: [],
+            activityInterests: [],
         },
         resolver: zodResolver(itineraryForm),
     });
     return (
         <div>
-            <div className="lg:grid lg:items-center lg:grid-cols-5">
+            <div className="lg:grid lg:items-center lg:grid-cols-5 bg-gray-100">
                 <section className="flex justify-center mt-5 col-span-2">
                     <ItineraryForm
                         form={form}
@@ -61,9 +63,13 @@ const Itinerary = () => {
                         geoCoder={geoCoder}
                     />
                 )}
-                <div className="col-span-5 lg:px-2">
-                    {isLoadingItineraries && <ItineraryListSkeleton />}
-                    {itineraries && <ItineraryList itineraries={itineraries} />}
+                <div className="col-span-5">
+                    <Card className="lg:mx-4 my-5 lg:px-2">
+                        {isLoadingItineraries && <ItineraryListSkeleton />}
+                        {itineraries && (
+                            <ItineraryList itineraries={itineraries} />
+                        )}
+                    </Card>
                 </div>
             </div>
         </div>

@@ -16,10 +16,10 @@ const StatusSelectItems = () => {
                     Active
                 </span>
             </SelectItem>
-            <SelectItem value="COMPLETE" className="focus:bg-green-50">
+            <SelectItem value="COMPLETED" className="focus:bg-green-50">
                 <span className="flex items-center">
                     <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
-                    Complete
+                    Completed
                 </span>
             </SelectItem>
         </>

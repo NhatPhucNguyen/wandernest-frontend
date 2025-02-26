@@ -4,6 +4,7 @@ import {
     deleteItineraryById,
     Itinerary,
     ItineraryStatus,
+    updateStatus,
 } from "@/api/ItineraryAPI";
 import { Badge } from "@/components/Badge";
 import { Button } from "@/components/Button";
@@ -46,10 +47,10 @@ const getStatusBadge = (status: ItineraryStatus) => {
                     Active
                 </Badge>
             );
-        case "COMPLETE":
+        case "COMPLETED":
             return (
                 <Badge className="bg-green-100 text-green-800 hover:bg-green-200">
-                    Complete
+                    Completed
                 </Badge>
             );
     }
@@ -93,9 +94,20 @@ export default function ItineraryList({
         }
     };
 
-    const changeStatus = (id: string, newStatus: ItineraryStatus) => {
-        //TODO: Implement change status
-        setOpenStatusDropdown(null);
+    const changeStatus = async (id: string, newStatus: ItineraryStatus) => {
+        try {
+            await updateStatus(id, newStatus);
+            mutate("/api/itineraries");
+        } catch {
+            toast({
+                title: "Failed to update status",
+                variant: "destructive",
+                description:
+                    "An error occurred while trying to update the status. Please try again.",
+            });
+        } finally {
+            setOpenStatusDropdown(null);
+        }
     };
 
     return (
