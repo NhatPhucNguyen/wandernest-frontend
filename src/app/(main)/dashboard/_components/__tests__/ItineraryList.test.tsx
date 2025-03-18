@@ -1,9 +1,16 @@
 import { Itinerary, ItineraryStatus } from "@/api/ItineraryAPI";
 import customAxios from "@/config/customAxios";
-import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import {
+    fireEvent,
+    render,
+    screen,
+    waitFor,
+    within,
+} from "@testing-library/react";
 import MockAdapter from "axios-mock-adapter";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import ItineraryList from "../ItineraryList";
+import { Accommodation } from "@/api/AccommodationAPI";
 
 vi.mock("@/hooks/useToast", () => ({
     useToast: vi.fn(() => ({
@@ -19,10 +26,17 @@ const mockItineraries: Itinerary[] = [
         endDate: "2023-06-22",
         travelers: 2,
         totalBudget: 3000,
-        accommodations: ["Hotel de Ville", "Airbnb in Le Marais"],
+        accommodations: [
+            { name: "Hotel de Ville" } as Accommodation,
+            { name: "Airbnb in Le Marais" } as Accommodation,
+        ],
         activities: ["Eiffel Tower", "Louvre Museum", "Seine River Cruise"],
         restaurants: ["Le Chateaubriand", "L'Ami Louis", "Septime"],
         status: "DRAFT" as ItineraryStatus,
+        location: {
+            lat: 0,
+            lng: 0,
+        },
     },
     {
         id: "2",
@@ -32,12 +46,15 @@ const mockItineraries: Itinerary[] = [
         travelers: 4,
         totalBudget: 5000,
         accommodations: [
-            "APA Hotel Shinjuku Kabukicho Tower",
-            "Ryokan in Asakusa",
+            { name: "APA Hotel Shinjuku Kabukicho Tower" } as Accommodation,
         ],
         activities: ["Tokyo Skytree", "Senso-ji Temple", "Teamlab Borderless"],
         restaurants: ["Sushi Saito", "Nakiryu", "Den"],
         status: "ACTIVE" as ItineraryStatus,
+        location: {
+            lat: 0,
+            lng: 0,
+        },
     },
 ];
 
@@ -73,7 +90,9 @@ describe("ItineraryList", () => {
     it("changes the itinerary status", async () => {
         mock.onPatch("/api/itineraries/1").reply(200, {});
         render(<ItineraryList itineraries={mockItineraries} />);
-        const statusButton = screen.getAllByRole("button", { name: "Draft" })[0];
+        const statusButton = screen.getAllByRole("button", {
+            name: "Draft",
+        })[0];
         fireEvent.click(statusButton);
         const dropdown = within(screen.getByRole("listbox"));
         const activeOption = dropdown.getByText("Active");
@@ -81,7 +100,9 @@ describe("ItineraryList", () => {
         await waitFor(() => {
             expect(mock.history.patch.length).toBe(1);
             expect(mock.history.patch[0].url).toBe("/api/itineraries/1");
-            expect(mock.history.patch[0].data).toBe(JSON.stringify({ status: "ACTIVE" }));
+            expect(mock.history.patch[0].data).toBe(
+                JSON.stringify({ status: "ACTIVE" })
+            );
         });
     });
 

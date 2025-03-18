@@ -30,6 +30,7 @@ import { ItineraryFormSchema } from "@/schema/formSchema";
 import { StandaloneSearchBox } from "@react-google-maps/api";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useRef } from "react";
 import { UseFormReturn } from "react-hook-form";
 import useSWRMutation from "swr/mutation";
@@ -37,18 +38,22 @@ type ItineraryFormProps = {
     setCenter: Dispatch<SetStateAction<{ lat: number; lng: number }>>;
     form: UseFormReturn<ItineraryFormSchema>;
     isLoadedGoogleService: boolean;
+    center: { lat: number; lng: number };
 };
 const ItineraryForm = ({
     form,
     isLoadedGoogleService,
     setCenter,
+    center,
 }: ItineraryFormProps) => {
     const { toast } = useToast();
     const searchBoxRef = useRef<google.maps.places.SearchBox | null>(null);
     const { isMutating, error, trigger } = useSWRMutation(
         "/api/itineraries",
-        (key, { arg }: { arg: ItineraryFormSchema }) => generateItinerary(arg)
+        (key, { arg }: { arg: ItineraryFormSchema }) =>
+            generateItinerary(arg, center)
     );
+    const router = useRouter();
     const onSubmit = async (values: ItineraryFormSchema) => {
         const itinerary = await trigger(values);
         if (error) {
@@ -65,7 +70,7 @@ const ItineraryForm = ({
                 description: "Itinerary created successfully.",
             });
         }
-        console.log(itinerary);
+        router.push(`/dashboard/accommodations?itinerary=${itinerary.id}`);
     };
     const handlePlacesChanged = () => {
         if (searchBoxRef.current) {

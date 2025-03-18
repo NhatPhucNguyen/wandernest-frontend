@@ -1,39 +1,38 @@
 "use client";
 
-import { getAccommodationsNearby } from "@/api/AccommodationAPI";
+import { getActivitiesNearby } from "@/api/ActivityAPI";
 import { Button } from "@/components/Button";
-import { useSavedAccommodations } from "@/context/AccommodationsProvider";
+import { useSavedActivities } from "@/context/ActivitiesProvider";
 import { usePlaceFilters } from "@/hooks/usePlaceFilters";
 import useUserItineraries from "@/hooks/useUserItineraries";
 import { BookOpen, Heart } from "lucide-react";
-import useSwr from "swr";
+import useSWR from "swr";
 import CardListSkeleton from "../../_components/CardListSkeleton";
 import { getStatusBadge } from "../../_components/ItinerarySelect";
-import AccommodationCard from "./AccommodationCard";
+import ActivityCard from "./ActivityCard";
 
-export default function AccommodationList() {
-    const { savedAccommodations, toggleSavedAccommodation } =
-        useSavedAccommodations();
+export default function ActivityList() {
     const { currentItinerary, selectedItinerary } = useUserItineraries();
     const {
-        data: accommodations,
-        isLoading,
-        error,
-    } = useSwr(`/api/accommodations?itinerary=${selectedItinerary}`, () =>
-        getAccommodationsNearby(selectedItinerary)
-    );
-    const {
         showSavedOnly,
+        setShowSavedOnly,
         showBookableOnly,
         setShowBookableOnly,
-        setShowSavedOnly,
     } = usePlaceFilters();
-    const filteredAccommodations = accommodations?.filter((accommodation) => {
+    const { savedActivities, toggleSavedActivity } = useSavedActivities();
+    const {
+        data: activities,
+        isLoading,
+        error,
+    } = useSWR(`/api/activities?itinerary=${selectedItinerary}`, () =>
+        getActivitiesNearby(selectedItinerary)
+    );
+    const filteredActivities = activities?.filter((activity) => {
         if (showSavedOnly) {
-            return accommodation.saved;
+            return activity.saved;
         }
-        if (showBookableOnly) {
-            return accommodation.websiteUri !== null;
+        if(showBookableOnly){
+            return activity.websiteUri
         }
         return true;
     });
@@ -43,9 +42,7 @@ export default function AccommodationList() {
     if (error) {
         return (
             <div className="text-center py-10">
-                <p className="text-lg font-semibold">
-                    No accommodations found.
-                </p>
+                <p className="text-lg font-semibold">No restaurants found.</p>
                 <p className="text-gray-500">
                     Please try adjusting your search criteria.
                 </p>
@@ -59,7 +56,7 @@ export default function AccommodationList() {
                     <h2 className="text-xl font-semibold">
                         {currentItinerary
                             ? currentItinerary.destination
-                            : "Please select an itinerary to see accommodations"}
+                            : "Please select an itinerary to see restaurants"}
                     </h2>
                     {currentItinerary &&
                         getStatusBadge(currentItinerary.status)}
@@ -88,26 +85,22 @@ export default function AccommodationList() {
                 </div>
             </div>
 
-            {!filteredAccommodations || filteredAccommodations.length === 0 ? (
+            {filteredActivities?.length === 0 ? (
                 <div className="text-center py-12 text-muted-foreground">
-                    {showSavedOnly
-                        ? "You haven't saved any accommodations yet."
-                        : showBookableOnly
-                        ? "No bookable accommodations found for the selected criteria."
-                        : "No accommodations found for the selected criteria."}
+                    {!currentItinerary
+                        ? "Invalid itinerary selected."
+                        : showSavedOnly
+                        ? "You haven't saved any activities yet."
+                        : "No activities found matching your criteria."}
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {filteredAccommodations.map((accommodation) => (
-                        <AccommodationCard
-                            key={accommodation.id}
-                            accommodation={accommodation}
-                            isSaved={
-                                savedAccommodations.includes(
-                                    accommodation.id
-                                ) || accommodation.saved
-                            }
-                            onSave={toggleSavedAccommodation}
+                    {filteredActivities?.map((activity) => (
+                        <ActivityCard
+                            key={activity.id}
+                            activity={activity}
+                            isSaved={savedActivities.includes(activity.id) || activity.saved}
+                            onSave={toggleSavedActivity}
                         />
                     ))}
                 </div>

@@ -33,9 +33,9 @@ describe("AuthAPI", () => {
             const token = "mocked-jwt-token";
             const username = "mocked-username";
             mock.onPost("/api/auth/login").reply(200, { token });
-
+    
             await login({ username: "testuser", password: "password" });
-
+    
             expect(Cookie.set).toHaveBeenCalledWith("token", token, {
                 expires: 1,
                 sameSite: "Strict",
@@ -43,20 +43,22 @@ describe("AuthAPI", () => {
             });
             expect(Cookie.set).toHaveBeenCalledWith("username", username, {
                 expires: 1,
+                sameSite: "Strict",
+                secure: true,
             });
         });
-
+    
         it("should return an error message on login failure", async () => {
             const errorMessage = "Invalid credentials";
             mock.onPost("/api/auth/login").reply(400, {
                 message: errorMessage,
             });
-
+    
             const result = await login({
                 username: "testuser",
                 password: "password",
             });
-
+    
             expect(result).toEqual({ errorMessage });
         });
     });

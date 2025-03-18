@@ -1,22 +1,31 @@
 import customAxios from "@/config/customAxios";
 import { ItineraryFormSchema } from "@/schema/formSchema";
 import { addDays } from "date-fns";
+import { Accommodation } from "./AccommodationAPI";
 
-export type Itinerary = {
+export interface Itinerary {
     id: string;
     destination: string;
     startDate: string;
     endDate: string;
     travelers: number;
     totalBudget: number;
-    accommodations: string[];
+    accommodations: Accommodation[];
     activities: string[];
     restaurants: string[];
     status: ItineraryStatus;
-};
+    location: {
+        lat: number;
+        lng: number;
+    };
+}
 export type ItineraryRequestBody = Omit<ItineraryFormSchema, "travelDates"> & {
     startDate: Date;
     endDate: Date;
+    location: {
+        lat: number;
+        lng: number;
+    };
 };
 export type ItineraryStatus = "DRAFT" | "ACTIVE" | "COMPLETED";
 const ITINERARIES_API = "/api/itineraries";
@@ -29,12 +38,14 @@ export const deleteItineraryById = async (id: string): Promise<Itinerary> => {
     return data;
 };
 export const generateItinerary = async (
-    itinerary: ItineraryFormSchema
+    itinerary: ItineraryFormSchema,
+    location: { lat: number; lng: number }
 ): Promise<Itinerary> => {
     const body: ItineraryRequestBody = {
         ...itinerary,
         startDate: itinerary.travelDates.from || new Date(),
         endDate: itinerary.travelDates.to || addDays(new Date(), 3),
+        location: location,
     };
     const { data } = await customAxios.post(
         `${ITINERARIES_API}/generate`,

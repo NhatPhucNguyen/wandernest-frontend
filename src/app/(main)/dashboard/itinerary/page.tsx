@@ -53,6 +53,7 @@ const Itinerary = () => {
                         form={form}
                         isLoadedGoogleService={isLoaded}
                         setCenter={setCenter}
+                        center={center}
                     />
                 </section>
                 {isLoaded && (

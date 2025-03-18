@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200">
+  <!-- Background rectangle -->
+  <rect width="400" height="200" fill="#f0f0f0"/>
+  
+  <!-- Restaurant icon -->
+  <circle cx="200" cy="80" r="40" fill="#e0e0e0"/>
+  <path d="M180 80 L190 65 L210 65 L220 80 Z" fill="#d0d0d0"/>
+  <rect x="185" y="80" width="30" height="20" fill="#d0d0d0"/>
+  
+  <!-- Fork and knife icons -->
+  <path d="M175 90 L165 110" stroke="#a0a0a0" stroke-width="3"/>
+  <path d="M175 90 L170 110" stroke="#a0a0a0" stroke-width="3"/>
+  <path d="M225 90 L230 110" stroke="#a0a0a0" stroke-width="3"/>
+  
+  <!-- Text placeholder lines -->
+  <rect x="100" y="130" width="200" height="10" rx="2" fill="#d0d0d0"/>
+  <rect x="130" y="150" width="140" height="8" rx="2" fill="#d0d0d0"/>
+  <rect x="150" y="170" width="100" height="8" rx="2" fill="#d0d0d0"/>
+</svg>

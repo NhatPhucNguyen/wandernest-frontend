@@ -24,6 +24,8 @@ export const login = async (input: LoginInput) => {
         if (username) {
             Cookie.set("username", username, {
                 expires: 1,
+                sameSite: "Strict",
+                secure: true,
             });
         }
     } catch (error) {
@@ -47,11 +49,11 @@ export const register = async (input: RegisterInput) => {
 export const validateToken = async () => {
     try {
         const token = Cookie.get("token");
-        if(!token){
+        if (!token) {
             return false;
         }
         await customAxios.get("/api/auth/validate-token");
-        Cookie.set("username",jwtDecode(token).sub!)
+        Cookie.set("username", jwtDecode(token).sub!);
         return true;
     } catch {
         Cookie.remove("token");

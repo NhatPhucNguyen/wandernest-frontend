@@ -14,7 +14,7 @@ const ExpandedRows = ({itinerary,readonly}:ExpandRowsProps) => {
                     <ul className="list-disc list-inside mb-2">
                         {itinerary.accommodations.map(
                             (accommodation, index) => (
-                                <li key={index}>{accommodation}</li>
+                                <li key={index}>{accommodation.name}</li>
                             )
                         )}
                     </ul>

@@ -40,22 +40,22 @@ const items = [
     },
     {
         title: "Dining",
-        url: "/dining",
+        url: "/dashboard/dining",
         icon: ConciergeBell,
     },
     {
         title: "Activities",
-        url: "/activities",
+        url: "/dashboard/activities",
         icon: Binoculars,
     },
     {
         title: "Budget Tracker",
-        url: "/budget",
+        url: "/dashboard/budget",
         icon: ReceiptText,
     },
     {
         title: "Settings",
-        url: "/settings",
+        url: "/dashboard/settings",
         icon: Settings,
     },
 ];

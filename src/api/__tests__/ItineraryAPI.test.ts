@@ -2,7 +2,14 @@ import customAxios from "@/config/customAxios";
 import { ItineraryFormSchema } from "@/schema/formSchema";
 import MockAdapter from "axios-mock-adapter";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { deleteItineraryById, generateItinerary, getUserItineraries, Itinerary, ItineraryStatus, updateStatus } from "../ItineraryAPI";
+import {
+    deleteItineraryById,
+    generateItinerary,
+    getUserItineraries,
+    Itinerary,
+    ItineraryStatus,
+    updateStatus,
+} from "../ItineraryAPI";
 
 describe("ItineraryAPI", () => {
     let mock: MockAdapter;
@@ -18,17 +25,53 @@ describe("ItineraryAPI", () => {
     describe("getUserItineraries", () => {
         it("should fetch user itineraries successfully", async () => {
             const itineraries: Itinerary[] = [
-                {
+                { 
                     id: "1",
                     destination: "Paris, France",
                     startDate: "2023-06-15",
                     endDate: "2023-06-22",
                     travelers: 2,
                     totalBudget: 3000,
-                    accommodations: ["Hotel de Ville", "Airbnb in Le Marais"],
-                    activities: ["Eiffel Tower", "Louvre Museum", "Seine River Cruise"],
+                    accommodations: [{
+                        name: "Hotel de Ville",
+                        id: "",
+                        address: "",
+                        priceLevel: "",
+                        photoUri: "",
+                        location: {
+                            lat: 0,
+                            lng: 0
+                        },
+                        websiteUri: null,
+                        rating: 0,
+                        types: [],
+                        saved: false
+                    }, {
+                        name: "Airbnb in Le Marais",
+                        id: "",
+                        address: "",
+                        priceLevel: "",
+                        photoUri: "",
+                        location: {
+                            lat: 0,
+                            lng: 0
+                        },
+                        websiteUri: null,
+                        rating: 0,
+                        types: [],
+                        saved: false
+                    }],
+                    activities: [
+                        "Eiffel Tower",
+                        "Louvre Museum",
+                        "Seine River Cruise",
+                    ],
                     restaurants: ["Le Chateaubriand", "L'Ami Louis", "Septime"],
                     status: "DRAFT" as ItineraryStatus,
+                    location: {
+                        lat: 0,
+                        lng: 0,
+                    },
                 },
             ];
             mock.onGet("/api/itineraries").reply(200, itineraries);
@@ -54,10 +97,46 @@ describe("ItineraryAPI", () => {
                 endDate: "2023-06-22",
                 travelers: 2,
                 totalBudget: 3000,
-                accommodations: ["Hotel de Ville", "Airbnb in Le Marais"],
-                activities: ["Eiffel Tower", "Louvre Museum", "Seine River Cruise"],
+                accommodations: [{
+                    name: "Hotel de Ville",
+                    id: "",
+                    address: "",
+                    priceLevel: "",
+                    photoUri: "",
+                    location: {
+                        lat: 0,
+                        lng: 0
+                    },
+                    websiteUri: null,
+                    rating: 0,
+                    types: [],
+                    saved: false
+                }, {
+                    name: "Airbnb in Le Marais",
+                    id: "",
+                    address: "",
+                    priceLevel: "",
+                    photoUri: "",
+                    location: {
+                        lat: 0,
+                        lng: 0
+                    },
+                    websiteUri: null,
+                    rating: 0,
+                    types: [],
+                    saved: false
+                }],
+                activities: [
+                    "Eiffel Tower",
+                    "Louvre Museum",
+                    "Seine River Cruise",
+                ],
                 restaurants: ["Le Chateaubriand", "L'Ami Louis", "Septime"],
                 status: "DRAFT" as ItineraryStatus,
+                location: {
+                    lat: 0,
+                    lng: 0,
+                },
             };
             mock.onDelete("/api/itineraries/1").reply(200, itinerary);
 
@@ -77,7 +156,10 @@ describe("ItineraryAPI", () => {
         it("should generate itinerary successfully", async () => {
             const itineraryForm: ItineraryFormSchema = {
                 destination: "Paris, France",
-                travelDates: { from: new Date("2023-06-15"), to: new Date("2023-06-22") },
+                travelDates: {
+                    from: new Date("2023-06-15"),
+                    to: new Date("2023-06-22"),
+                },
                 numberOfTravelers: 2,
                 totalBudget: 3000,
                 accommodationType: "Hotel",
@@ -91,14 +173,53 @@ describe("ItineraryAPI", () => {
                 endDate: "2023-06-22",
                 travelers: 2,
                 totalBudget: 3000,
-                accommodations: ["Hotel de Ville", "Airbnb in Le Marais"],
-                activities: ["Eiffel Tower", "Louvre Museum", "Seine River Cruise"],
+                accommodations: [{
+                    name: "Hotel de Ville",
+                    id: "",
+                    address: "",
+                    priceLevel: "",
+                    photoUri: "",
+                    location: {
+                        lat: 0,
+                        lng: 0
+                    },
+                    websiteUri: null,
+                    rating: 0,
+                    types: [],
+                    saved: false
+                }, {
+                    name: "Airbnb in Le Marais",
+                    id: "",
+                    address: "",
+                    priceLevel: "",
+                    photoUri: "",
+                    location: {
+                        lat: 0,
+                        lng: 0
+                    },
+                    websiteUri: null,
+                    rating: 0,
+                    types: [],
+                    saved: false
+                }],
+                activities: [
+                    "Eiffel Tower",
+                    "Louvre Museum",
+                    "Seine River Cruise",
+                ],
                 restaurants: ["Le Chateaubriand", "L'Ami Louis", "Septime"],
                 status: "DRAFT" as ItineraryStatus,
+                location: {
+                    lat: 0,
+                    lng: 0,
+                },
             };
             mock.onPost("/api/itineraries/generate").reply(200, itinerary);
 
-            const result = await generateItinerary(itineraryForm);
+            const result = await generateItinerary(itineraryForm, {
+                lat: 0,
+                lng: 0,
+            });
 
             expect(result).toEqual(itinerary);
         });
@@ -106,7 +227,10 @@ describe("ItineraryAPI", () => {
         it("should handle error when generating itinerary", async () => {
             const itineraryForm: ItineraryFormSchema = {
                 destination: "Paris, France",
-                travelDates: { from: new Date("2023-06-15"), to: new Date("2023-06-22") },
+                travelDates: {
+                    from: new Date("2023-06-15"),
+                    to: new Date("2023-06-22"),
+                },
                 numberOfTravelers: 2,
                 totalBudget: 3000,
                 accommodationType: "Hotel",
@@ -115,7 +239,9 @@ describe("ItineraryAPI", () => {
             };
             mock.onPost("/api/itineraries/generate").reply(500);
 
-            await expect(generateItinerary(itineraryForm)).rejects.toThrow();
+            await expect(
+                generateItinerary(itineraryForm, { lat: 0, lng: 0 })
+            ).rejects.toThrow();
         });
     });
 
@@ -128,10 +254,46 @@ describe("ItineraryAPI", () => {
                 endDate: "2023-06-22",
                 travelers: 2,
                 totalBudget: 3000,
-                accommodations: ["Hotel de Ville", "Airbnb in Le Marais"],
-                activities: ["Eiffel Tower", "Louvre Museum", "Seine River Cruise"],
+                accommodations: [{
+                    name: "Hotel de Ville",
+                    id: "",
+                    address: "",
+                    priceLevel: "",
+                    photoUri: "",
+                    location: {
+                        lat: 0,
+                        lng: 0
+                    },
+                    websiteUri: null,
+                    rating: 0,
+                    types: [],
+                    saved: false
+                }, {
+                    name: "Airbnb in Le Marais",
+                    id: "",
+                    address: "",
+                    priceLevel: "",
+                    photoUri: "",
+                    location: {
+                        lat: 0,
+                        lng: 0
+                    },
+                    websiteUri: null,
+                    rating: 0,
+                    types: [],
+                    saved: false
+                }],
+                activities: [
+                    "Eiffel Tower",
+                    "Louvre Museum",
+                    "Seine River Cruise",
+                ],
                 restaurants: ["Le Chateaubriand", "L'Ami Louis", "Septime"],
                 status: "ACTIVE" as ItineraryStatus,
+                location: {
+                    lat: 0,
+                    lng: 0,
+                },
             };
             mock.onPatch("/api/itineraries/1").reply(200, itinerary);
 
