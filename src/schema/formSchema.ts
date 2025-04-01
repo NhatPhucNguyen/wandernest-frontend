@@ -1,3 +1,4 @@
+import { ExpenseCategory } from "@/api/BudgetAPI";
 import { DateRange } from "react-day-picker";
 import { z } from "zod";
 
@@ -91,6 +92,20 @@ export const itineraryForm = z.object({
     cuisinePreferences: z.array(z.string()).optional(),
     activityInterests: z.array(z.string()).optional(),
 });
+export const expenseSchema = z.object({
+    description: z.string()
+        .min(1, "Description is required")
+        .max(100, "Description must be less than 100 characters"),
+    amount: z.coerce.number()
+        .positive("Amount must be greater than 0")
+        .refine(val => !isNaN(val), "Amount must be a valid number"),
+    category: z.nativeEnum(ExpenseCategory, {
+        errorMap: () => ({ message: "Please select a valid category" }),
+    }),
+    date: z.coerce.date(),
+    itineraryId: z.string().min(1, "Itinerary is required"),
+});
+export type ExpenseFormSchema = z.infer<typeof expenseSchema>;
 export type LoginFormSchema = z.infer<typeof loginFormSchema>;
 export type RegisterFormSchema = z.infer<typeof registerFormSchema>;
 export type ItineraryFormSchema = z.infer<typeof itineraryForm>;
