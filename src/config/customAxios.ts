@@ -7,7 +7,7 @@ export type DataResponse = {
     errors?: [];
 };
 const customAxios = axios.create({
-    baseURL: "http://localhost:8080",
+    baseURL: process.env.NEXT_PUBLIC_BASE_API_URL || "http://localhost:8080",
     timeout: 5000,
 });
 customAxios.interceptors.request.use((config) => {
