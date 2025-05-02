@@ -39,6 +39,9 @@ export default function RestaurantCard({
     const selectedItinerary = searchParams.get("itinerary");
     // Function to get today's opening hours or next open day
     const getTodayOrNextOpenHours = () => {
+        if (restaurant.weekdayDescriptions == null) {
+            return null;
+        }
         const today = new Date().getDay();
         let checkDay = today;
         let dayCount = 0;
@@ -59,6 +62,12 @@ export default function RestaurantCard({
     const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
         restaurant.name + " " + restaurant.address
     )}`;
+
+    // Display schedule updating message when weekdayDescriptions is null
+    const scheduleMessage =
+        restaurant.weekdayDescriptions === null
+            ? "Schedule is updating..."
+            : todayOrNextOpenHours;
 
     // Function to render price information
     const renderPriceInfo = () => {
@@ -116,35 +125,51 @@ export default function RestaurantCard({
                         {restaurant.rating.toFixed(1)}
                     </span>
                 </div>
-                <div className="flex items-center text-sm text-muted-foreground mb-2">
-                    <Clock className="w-4 h-4 mr-1" />
-                    {todayOrNextOpenHours}
-                </div>
-                <div className="mt-2">
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        className="p-0 h-auto font-normal"
-                        onClick={() => setShowFullSchedule(!showFullSchedule)}
-                    >
-                        {showFullSchedule
-                            ? "Hide full schedule"
-                            : "Show full schedule"}
-                        {showFullSchedule ? (
-                            <ChevronUp className="ml-1 h-4 w-4" />
-                        ) : (
-                            <ChevronDown className="ml-1 h-4 w-4" />
-                        )}
-                    </Button>
-                </div>
-                {showFullSchedule && (
-                    <div className="mt-2 text-sm">
-                        {restaurant.weekdayDescriptions.map((day, index) => (
-                            <div key={index} className="flex justify-between">
-                                <span>{day.split(": ")[0]}</span>
-                                <span>{day.split(": ")[1]}</span>
+                {restaurant.weekdayDescriptions ? (
+                    <>
+                        <div className="flex items-center text-sm text-muted-foreground mb-2">
+                            <Clock className="w-4 h-4 mr-1" />
+                            {scheduleMessage}
+                        </div>
+                        <div className="mt-2">
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="p-0 h-auto font-normal"
+                                onClick={() =>
+                                    setShowFullSchedule(!showFullSchedule)
+                                }
+                            >
+                                {showFullSchedule
+                                    ? "Hide full schedule"
+                                    : "Show full schedule"}
+                                {showFullSchedule ? (
+                                    <ChevronUp className="ml-1 h-4 w-4" />
+                                ) : (
+                                    <ChevronDown className="ml-1 h-4 w-4" />
+                                )}
+                            </Button>
+                        </div>
+                        {showFullSchedule && (
+                            <div className="mt-2 text-sm">
+                                {restaurant.weekdayDescriptions.map(
+                                    (day, index) => (
+                                        <div
+                                            key={index}
+                                            className="flex justify-between"
+                                        >
+                                            <span>{day.split(": ")[0]}</span>
+                                            <span>{day.split(": ")[1]}</span>
+                                        </div>
+                                    )
+                                )}
                             </div>
-                        ))}
+                        )}
+                    </>
+                ) : (
+                    <div className="flex items-center text-sm text-muted-foreground mb-2">
+                        <Clock className="w-4 h-4 mr-1" />
+                        <span>Schedule is updating...</span>
                     </div>
                 )}
             </CardContent>

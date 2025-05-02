@@ -15,6 +15,7 @@ export const login = async (input: LoginInput) => {
             "/api/auth/login",
             input
         );
+        console.log(data);
         Cookie.set("token", data.token, {
             expires: 1,
             sameSite: "Strict",
