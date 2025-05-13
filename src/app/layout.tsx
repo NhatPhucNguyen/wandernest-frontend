@@ -14,8 +14,15 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
     title: "WanderNest | Find Your Perfect Stay",
-    description: "Discover and book unique accommodations around the world with WanderNest - your home away from home.",
-    keywords: ["accommodation", "travel", "hotels", "vacation rentals", "booking"],
+    description:
+        "Discover and book unique accommodations around the world with WanderNest - your home away from home.",
+    keywords: [
+        "accommodation",
+        "travel",
+        "hotels",
+        "vacation rentals",
+        "booking",
+    ],
     authors: [{ name: "Nhat Nguyen" }],
     category: "Travel",
     robots: {
@@ -24,7 +31,8 @@ export const metadata: Metadata = {
     },
     openGraph: {
         title: "WanderNest | Find Your Perfect Stay",
-        description: "Discover and book unique accommodations around the world with WanderNest.",
+        description:
+            "Discover and book unique accommodations around the world with WanderNest.",
         url: "https://wandernest.com",
         siteName: "WanderNest",
         images: [
@@ -40,7 +48,8 @@ export const metadata: Metadata = {
     twitter: {
         card: "summary_large_image",
         title: "WanderNest | Find Your Perfect Stay",
-        description: "Discover and book unique accommodations around the world with WanderNest.",
+        description:
+            "Discover and book unique accommodations around the world with WanderNest.",
         images: ["/images/twitter-image.jpg"],
     },
 };
@@ -52,6 +61,9 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
+            <head>
+                <link rel="icon" type="image/png" href="/icon.png" />
+            </head>
             <body
                 className={`${geistSans.variable} ${geistMono.variable} antialiased`}
             >
